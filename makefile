@@ -1,14 +1,15 @@
 .PHONY:
 
-FILES :=                              \
-    cs.html                      \
-    cs.log                       \
-    language_detecting.py                        \
-    RunAnalysis.in                     \
-    RunAnalysis.out                    \
-    RunAnalysis.py                     \
-    TestAnalysis.out                   \
-    TestAnalysis.py 
+FILES :=					\
+    cs.html					\
+    cs.log					\
+    language_detecting.py	\
+	text_class.py			\
+    RunAnalysis.py  		\
+	viewresults.sh 			\
+	results.sql				\
+	results.txt
+
 #
 
 ifeq ($(shell uname), Darwin)          # Apple	
@@ -42,14 +43,6 @@ cs.html: language_detecting.py
 cs.log:
 	git log > cs.log
 
-RunAnalysis.tmp: RunAnalysis.in RunAnalysis.out RunAnalysis.py
-	$(PYTHON) RunAnalysis.py < RunAnalysis.in > RunAnalysis.tmp
-	diff --strip-trailing-cr RunAnalysis.tmp RunAnalysis.out
-
-TestAnalysis.tmp: TestAnalysis.py
-	$(COVERAGE) run    --branch TestAnalysis.py >  TestAnalysis.tmp 2>&1
-	$(COVERAGE) report -m                      >> TestAnalysis.tmp
-	cat TestAnalysis.tmp
 
 check:
 	@not_found=0;                                 \
@@ -73,9 +66,8 @@ check:
 clean:
 	rm -f  .coverage
 	rm -f  *.pyc
-	rm -f  RunAnalysis.tmp
-	rm -f  TestAnalysis.tmp
 	rm -rf __pycache__
+	rm -f results.txt
 
 config:
 	git config -l
@@ -83,7 +75,6 @@ config:
 format:
 	$(AUTOPEP8) -i language_detecting.py
 	$(AUTOPEP8) -i RunAnalysis.py
-	$(AUTOPEP8) -i TestAnalysis.py
 
 scrub:
 	make clean
@@ -119,5 +110,7 @@ versions:
 	which        $(PYTHON)
 	$(PYTHON)    --version
 
-test: cs.html cs.log RunAnalysis.tmp TestAnalysis.tmp check
+test: cs.html cs.log check
+
+
 

@@ -6163,7 +6163,6 @@ errors
 ers
 es
 esa
-esc
 escape
 escaped
 escapes
@@ -19656,7 +19655,6 @@ wk
 wks
 wl
 wlan
-wm
 wma
 wmd
 wmv
