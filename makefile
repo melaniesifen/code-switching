@@ -1,14 +1,12 @@
 .PHONY:
 
-FILES :=					\
-    cs.html					\
-    cs.log					\
+FILES :=			\
+    cs.html			\
+    cs.log			\
     language_detecting.py	\
-	text_class.py			\
+    text_class.py		\
     RunAnalysis.py  		\
-	viewresults.sh 			\
-	results.sql				\
-	results.txt
+    results.py
 
 #
 
@@ -20,13 +18,13 @@ ifeq ($(shell uname), Darwin)          # Apple
     PYDOC    := pydoc3
     AUTOPEP8 := autopep8
 else ifeq ($(shell uname -p), unknown) # Windows
-    PYTHON   := python                 # on my machine it's python
+    PYTHON   := python                 
     PIP      := pip3
     PYLINT   := pylint
     COVERAGE := coverage
-    PYDOC    := python -m pydoc        # on my machine it's pydoc
+    PYDOC    := python -m pydoc        
     AUTOPEP8 := autopep8
-else                                   # UTCS
+else                                   
     PYTHON   := python3
     PIP      := pip3
     PYLINT   := pylint3
@@ -42,26 +40,6 @@ cs.html: language_detecting.py
 
 cs.log:
 	git log > cs.log
-
-
-check:
-	@not_found=0;                                 \
-    for i in $(FILES);                            \
-    do                                            \
-        if [ -e $$i ];                            \
-        then                                      \
-            echo "$$i found";                     \
-        else                                      \
-            echo "$$i NOT FOUND";                 \
-            not_found=`expr "$$not_found" + "1"`; \
-        fi                                        \
-    done;                                         \
-    if [ $$not_found -ne 0 ];                     \
-    then                                          \
-        echo "$$not_found failures";              \
-        exit 1;                                   \
-    fi;                                           \
-    echo "success";
 
 clean:
 	rm -f  .coverage
@@ -110,7 +88,7 @@ versions:
 	which        $(PYTHON)
 	$(PYTHON)    --version
 
-test: cs.html cs.log check
+test: cs.html cs.log
 
 
 
