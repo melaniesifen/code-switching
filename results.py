@@ -1,9 +1,9 @@
 from text_class import Database
-from fuck import ret
+from secrets import secret
 import mysql.connector
 
 def get_results():
-        p = ret()
+        p = secret()
         mydb = mysql.connector.connect(
             host = 'localhost',
             user = 'root',
@@ -32,38 +32,24 @@ def get_results():
             if both_lang_count == 0:
                 percentages[table_name] = [0, 0, 0, 0]
                 continue
+                
             lexical = "select count(cs_reason) from " + table_name + " where cs_reason = 'lexical need';"
-            mycursor.execute(lexical)
-            lexical_count = mycursor.fetchall()
-            try:
-                lexical_count = lexical_count[0][0]
-            except IndexError:
-                lexical_count = 0
             emphasis = "select count(cs_reason) from " + table_name + " where cs_reason = 'emphasis';"
-            mycursor.execute(emphasis)
-            emphasis_count = mycursor.fetchall()
-            try:
-                emphasis_count = emphasis_count[0][0]
-            except IndexError:
-                emphasis_count = 0
             style = "select count(cs_reason) from " + table_name + " where cs_reason = 'style';"
-            mycursor.execute(style)
-            style_count = mycursor.fetchall()
-            try:
-                style_count = style_count[0][0]
-            except IndexError:
-                style_count = 0
             quote = "select count(cs_reason) from " + table_name + " where cs_reason = 'quote';"
-            mycursor.execute(quote)
-            quote_count = mycursor.fetchall()
-            try:
-                quote_count = quote_count[0][0]
-            except IndexError:
-                quote_count = 0
-            percentages[table_name] = [round(lexical_count/both_lang_count, 2)*100, 
-                                       round(emphasis_count/both_lang_count, 2)*100, 
-                                       round(style_count/both_lang_count, 2)*100,
-                                       round(quote_count/both_lang_count, 2)*100]
+            cs_reason_list = [lexical, emphasis, style, quote]
+            count_list = []
+            for reason in cs_reason_list:
+                mycursor.execute(reason)
+                count = mycursor.fetchall()
+                try:
+                        count = count[0][0]
+                except IndexError:
+                        count = 0
+                count = round(count/both_lang_count, 2)*100
+                count_list.append(count)
+         
+            percentages[table_name] = count_list
             
         for table_name in percentages:
             sql = "INSERT INTO cs_results (title, lexical, emphasis, style, quote) VALUES (%s, %s, %s, %s, %s)"
