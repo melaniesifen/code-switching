@@ -1,7 +1,7 @@
 import pdftotext
 import re
 import mysql.connector
-from fuck import ret
+from secrets import secret
 
 with open("dictionaries/nameset.txt", "r") as names:
     names = names.read().split()
@@ -89,7 +89,7 @@ class Database(object):
     def __init__(self, text):
         self.content = text.content
         self.table_name = text.title
-        p = ret()
+        p = secret()
         mydb = mysql.connector.connect(
             host = 'localhost',
             user = 'root',
@@ -117,7 +117,7 @@ class Database(object):
             mydb.commit()
             
     def get_results(self):
-        p = ret()
+        p = secret()
         mydb = mysql.connector.connect(
             host = 'localhost',
             user = 'root',
